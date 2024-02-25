@@ -151,89 +151,90 @@
 // const Order = mongoose.model('Order', orderSchema);
 
 // module.exports = Order;
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
-    form: {
-      movingFrom: String,
-      movingFromHasLift: Boolean,
-      movingFromFloor: String,
-      movingTo: String,
-      movingToHasLift: Boolean,
-      movingOn: String,
+  form: {
+    movingFrom: String,
+    movingFromHasLift: Boolean,
+    movingFromFloor: String,
+    movingTo: String,
+    movingToHasLift: Boolean,
+    movingOn: String,
+  },
+  selectedItems: [{
+      item: String,
+      count: Number,
     },
-    selectedItems: {
-      type: Map,
-      of: {
-        item: String,
-        count: Number,
-      },
+  ],
+  truckDetails: {
+    counts: {
+      "Small Truck": Number,
+      "Pickup Truck": Number,
+      "Box Truck": Number,
+      "Flatbed truck Truck": Number,
     },
-    truckDetails: {
-      counts: {
-        "Small Truck": Number,
-        "Pickup Truck": Number,
-        "Box Truck": Number,
-        "Flatbed truck Truck": Number,
-      },
-      selectedTruck: {
+    selectedTruck: {
+      type: String,
+      count: Number,
+    },
+  },
+  pricingModal: [
+    {
+      packageName: String,
+      price: Number,
+    },
+  ],
+  bookingDetails: {
+    selectedDate: String,
+    selectedTime: String,
+    selectedCoupon: String,
+  },
+  totalAmount: {
+    type: Number,
+    required: true,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  userName:{
+    type:String
+  },
+  acceptedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Packer",
+  },
+  payment: {
+    type: String,
+    required: false,
+  },
+  orderCompletion: {
+    type: String,
+    enum: ["Processing", "Approved", "Completed"],
+    default: "Processing",
+  },
+  tracking: [
+    {
+      status: {
         type: String,
-        count: Number,
+        enum: ["Processing", "Picked", "Completed"],
+        default: "Processing",
+        required: false,
+      },
+      timestamp: {
+        type: Date,
+        default: Date.now,
       },
     },
-    pricingModal: [
-      {
-        packageName: String,
-        price: Number,
-      },
-    ],
-    bookingDetails: {
-      selectedDate: String,
-      selectedTime: String,
-      selectedCoupon: String,
-    },
-    totalAmount: {
-          type: Number,
-          required: true,
-        },
-    user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
-          required: true,
-        },
-    acceptedBy: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Packer',
-        },
-    payment: {
-          type: String,
-          required: false,
-        },
-    orderCompletion: {
-          type: String,
-          enum: ['Processing', 'Approved', 'Completed'],
-          default: 'Processing',
-        },
-    tracking: [
-          {
-            status: {
-              type: String,
-              enum: ['Processing', 'Picked', 'Completed'],
-              default: 'Processing',
-              required: false,
-            },
-            timestamp: {
-              type: Date,
-              default: Date.now,
-            },
-          },
-        ],
-    razorpayOrderId: {
-          type: String,
-          required: false,
-        },
+  ],
+  razorpayOrderId: {
+    type: String,
+    required: false,
+  },
 });
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 
 module.exports = Order;
