@@ -18,6 +18,11 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 app.set("trust proxy", 1);
 
+// Middleware to set SameSite=None attribute for all cookies
+app.use((req, res, next) => {
+  res.setHeader('Set-Cookie', 'HttpOnly;Secure;SameSite=None');
+  next();
+});
 
 const cors = require("cors");
 const corsOptions = {
@@ -32,7 +37,6 @@ app.use(cors(corsOptions));
 
 app.use("/api/v1", userRoute);
 app.use("/api/v1", orderRoute);
-
 
 // error middileware
 app.use(errorMiddleware);
