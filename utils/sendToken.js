@@ -5,7 +5,9 @@ const sendToken = async (user, statusCode, res) => {
             expires: new Date(
                 Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
             ),
-            httpOnly: true
+            httpOnly: true,
+            secure: true, // Set Secure flag for HTTPS
+            sameSite: 'None' // Set SameSite=None for cross-site requests
         };
         // Send token as a cookie and user data in the response body
         res.status(statusCode).cookie('token', token, options).json({

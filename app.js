@@ -4,7 +4,10 @@ const path = require("path");
 
 const app = express();
 
-require("dotenv").config({ path: "config/config.env" });
+// config
+if (process.env.NODE_ENV !== "PRODUCTION") {
+  require("dotenv").config({ path: "config/config.env" });
+}
 
 // Routes import
 const userRoute = require("./routes/userRoute");
@@ -16,15 +19,11 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 app.use(cookieParser());
-app.set("trust proxy", 1);
-
-// Middleware to set SameSite=None attribute for all cookies
-app.use((req, res, next) => {
-  res.setHeader('Set-Cookie', 'HttpOnly;Secure;SameSite=None');
-  next();
-});
 
 const cors = require("cors");
+app.set("trust proxy", 1);
+
+
 const corsOptions = {
   origin: ["http://localhost:5173", "https://jkbros.netlify.app"], // Allow requests from any origin
   credentials: true, // Allow cookies across origins
@@ -32,13 +31,17 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"], // Specify allowed headers
   optionsSuccessStatus: 200, // Send 200 status for OPTIONS requests
 };
-
 app.use(cors(corsOptions));
 
 app.use("/api/v1", userRoute);
 app.use("/api/v1", orderRoute);
 
+// app.use(express.static(path.join(__dirname + "./../frontend/build")));
+
+// app.get('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, "./../frontend/build/index.html"));
+// })
+
 // error middileware
 app.use(errorMiddleware);
-
 module.exports = app;
